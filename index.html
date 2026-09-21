@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A screenshot-led guide to connecting AIOStreams to Strand through its Jellyfin-compatible server.">
+  <meta name="theme-color" content="#f5f2e9">
+  <title>Connect AIOStreams to Strand through Jellyfin</title>
+  <style>
+    :root {
+      --paper: #f5f2e9;
+      --card: #fffdf7;
+      --ink: #1f2924;
+      --muted: #657068;
+      --line: #d9d6ca;
+      --green: #176a50;
+      --green-soft: #e2eee8;
+      --purple: #5944b7;
+      --warning: #9a5c11;
+      --warning-bg: #fff1d7;
+      --danger: #9b3030;
+      --danger-bg: #fdeaea;
+      --shadow: 0 18px 55px rgba(31, 41, 36, .10);
+      --content: 900px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 0, rgba(23, 106, 80, .08), transparent 28rem),
+        var(--paper);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 18px;
+      line-height: 1.7;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: var(--green); text-underline-offset: 3px; }
+    a:hover { color: #0f4637; }
+    code, .sans, .label, button { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+    code { padding: .1em .34em; border-radius: 5px; background: #eceae2; font-size: .87em; }
+
+    header {
+      padding: 5.5rem 1.25rem 4.2rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .hero { width: min(var(--content), 100%); margin: auto; }
+    .kicker {
+      margin: 0 0 1rem;
+      color: var(--green);
+      font: 800 .78rem/1.2 Inter, ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    h1 {
+      max-width: 800px;
+      margin: 0;
+      font-size: clamp(2.55rem, 7vw, 5.1rem);
+      line-height: .98;
+      letter-spacing: -.045em;
+    }
+    .intro { max-width: 760px; margin: 1.4rem 0 0; color: var(--muted); font-size: 1.18rem; }
+    .meta { display: flex; flex-wrap: wrap; gap: .5rem 1rem; margin-top: 1.5rem; color: var(--muted); font: 600 .82rem/1.4 Inter, sans-serif; }
+
+    .contents-wrap { padding: 0 1.25rem; }
+    .contents {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .55rem;
+      width: min(var(--content), 100%);
+      margin: 1.5rem auto 0;
+    }
+    .contents a {
+      padding: .42rem .72rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 253, 247, .6);
+      font: 700 .76rem/1 Inter, sans-serif;
+      text-decoration: none;
+    }
+    .contents a:hover { border-color: var(--green); color: var(--green); }
+
+    main { width: min(var(--content), calc(100% - 2.5rem)); margin: 2rem auto 6rem; }
+    section { padding: 3.8rem 0; border-bottom: 1px solid var(--line); scroll-margin-top: 1rem; }
+    section:first-child { padding-top: 2rem; }
+    section:last-child { border-bottom: 0; }
+    h2 { margin: 0 0 1rem; font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.1; letter-spacing: -.025em; }
+    h3 { margin: 2rem 0 .5rem; font-size: 1.25rem; line-height: 1.3; }
+    p { margin: .8rem 0; }
+    ul, ol { padding-left: 1.35rem; }
+    li + li { margin-top: .45rem; }
+    .step-title { display: grid; grid-template-columns: 3rem 1fr; gap: .85rem; align-items: start; }
+    .number {
+      display: grid;
+      place-items: center;
+      width: 2.65rem;
+      height: 2.65rem;
+      border-radius: 50%;
+      color: white;
+      background: var(--green);
+      font: 800 1rem/1 Inter, sans-serif;
+    }
+    .step-title h2 { padding-top: .05rem; }
+
+    .summary {
+      padding: 1.3rem 1.4rem;
+      border: 1px solid #bed5ca;
+      border-radius: 14px;
+      background: var(--green-soft);
+    }
+    .summary strong { color: var(--green); }
+    .note {
+      margin: 1.4rem 0;
+      padding: 1rem 1.1rem;
+      border-left: 4px solid var(--green);
+      border-radius: 0 10px 10px 0;
+      background: rgba(255, 253, 247, .7);
+    }
+    .note.warning { border-color: var(--warning); background: var(--warning-bg); }
+    .note.danger { border-color: var(--danger); background: var(--danger-bg); }
+    .note strong { font-family: Inter, sans-serif; font-size: .92rem; }
+
+    figure {
+      margin: 1.7rem 0 0;
+      padding: .7rem;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+    figure img { width: 100%; border-radius: 11px; background: #050505; }
+    figcaption { padding: .75rem .35rem .15rem; color: var(--muted); font: 600 .78rem/1.5 Inter, sans-serif; }
+    .phone { max-width: 620px; margin-left: auto; margin-right: auto; }
+    .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+    .pair figure { margin-top: 1.2rem; }
+    .zoomable { cursor: zoom-in; }
+
+    .field-list { display: grid; gap: .75rem; margin: 1.2rem 0; }
+    .field {
+      display: grid;
+      grid-template-columns: 145px 1fr;
+      gap: 1rem;
+      padding: .85rem 1rem;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(255, 253, 247, .7);
+    }
+    .field strong { font-family: Inter, sans-serif; font-size: .9rem; }
+    .field span { color: var(--muted); }
+    .copy-row {
+      display: flex;
+      align-items: stretch;
+      max-width: 650px;
+      margin: 1rem 0;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fffdf8;
+    }
+    .copy-row code { flex: 1; padding: .8rem 1rem; border-radius: 0; background: transparent; overflow-x: auto; white-space: nowrap; }
+    .copy-row button { border: 0; border-left: 1px solid var(--line); padding: 0 1rem; color: white; background: var(--green); font-weight: 800; cursor: pointer; }
+    .copy-row button:hover { background: #0f513e; }
+
+    table { width: 100%; margin: 1rem 0; border-collapse: collapse; }
+    th, td { padding: .8rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: var(--green); font: 800 .78rem/1.3 Inter, sans-serif; text-transform: uppercase; letter-spacing: .04em; }
+    td { color: #48534c; }
+
+    footer { padding: 2.5rem 1.25rem 4rem; border-top: 1px solid var(--line); color: var(--muted); text-align: center; font: 600 .78rem/1.6 Inter, sans-serif; }
+    dialog { width: min(96vw, 1500px); max-height: 94vh; padding: .7rem; border: 0; border-radius: 16px; background: #111; box-shadow: 0 30px 100px #0009; }
+    dialog::backdrop { background: rgba(0, 0, 0, .82); }
+    dialog img { max-width: 100%; max-height: 86vh; margin: auto; border-radius: 8px; }
+    dialog button { display: block; margin: .55rem 0 0 auto; padding: .55rem .9rem; border: 0; border-radius: 8px; color: #111; background: white; font-weight: 800; cursor: pointer; }
+
+    @media (max-width: 680px) {
+      body { font-size: 17px; }
+      header { padding-top: 3.8rem; }
+      .pair { grid-template-columns: 1fr; }
+      .field { grid-template-columns: 1fr; gap: .15rem; }
+      .step-title { grid-template-columns: 2.7rem 1fr; }
+      .number { width: 2.35rem; height: 2.35rem; }
+      main { width: min(var(--content), calc(100% - 1.2rem)); }
+      figure { padding: .4rem; border-radius: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <p class="kicker">Strand community guide</p>
+      <h1>Connect AIOStreams to Strand through Jellyfin</h1>
+      <p class="intro">Configure your addons once in AIOStreams, expose the configuration as a Jellyfin-compatible server, and use it in Strand across iPhone, iPad, Mac and Apple TV.</p>
+      <div class="meta"><span>About 10–20 minutes</span><span>•</span><span>No separate Jellyfin server required</span><span>•</span><span>Updated September 2026</span></div>
+    </div>
+  </header>
+
+  <div class="contents-wrap">
+    <nav class="contents sans" aria-label="Guide contents">
+      <a href="#before">Before you start</a><a href="#open">Open AIOStreams</a><a href="#addons">Add sources</a><a href="#jellyfin">Jellyfin details</a><a href="#strand">Connect Strand</a><a href="#verify">Verify</a><a href="#troubleshooting">Fixes</a>
+    </nav>
+  </div>
+
+  <main>
+    <section id="before">
+      <h2>Before you start</h2>
+      <div class="summary"><strong>The short version:</strong> AIOStreams can behave like a Jellyfin server. Its catalogs become libraries and the streams returned for a title become Jellyfin versions. Strand connects to that endpoint like it would connect to any other Jellyfin server.</div>
+      <p>You need a saved AIOStreams configuration containing:</p>
+      <ul>
+        <li><strong>Catalog addons</strong> to populate libraries and shelves.</li>
+        <li><strong>Metadata addons</strong> for titles, artwork, seasons and episodes.</li>
+        <li><strong>Stream addons</strong> to supply playable versions.</li>
+      </ul>
+      <div class="note warning"><strong>Use lawful sources.</strong> Only configure and play sources you are legally permitted to access.</div>
+    </section>
+
+    <section id="open">
+      <div class="step-title"><span class="number">1</span><h2>Open AIOStreams</h2></div>
+      <p>Open your chosen AIOStreams instance and select <strong>Configure</strong>. You can use a compatible public instance or your own self-hosted instance.</p>
+      <figure class="phone"><img class="zoomable" src="assets/01-open-aiostreams.png" alt="AIOStreams home page with Configure highlighted"><figcaption>Select Configure to open the addon setup.</figcaption></figure>
+    </section>
+
+    <section id="addons">
+      <div class="step-title"><span class="number">2</span><h2>Add your addons</h2></div>
+      <p>Open <strong>Marketplace</strong> and add the services you want AIOStreams to combine. The exact choices are personal; the important part is having catalogs, metadata and streams available.</p>
+      <figure><img class="zoomable" src="assets/02-add-addons.png" alt="AIOStreams Installed page with Marketplace highlighted"><figcaption>The Marketplace contains compatible addons. Configure credentials only on the trusted AIOStreams instance you intend to use.</figcaption></figure>
+      <div class="note"><strong>Tip:</strong> Under <strong>Addons → Catalogs</strong>, place the catalogs you care about most near the top. They appear as Jellyfin libraries in the same order, and an instance may impose a library limit.</div>
+    </section>
+
+    <section id="save">
+      <div class="step-title"><span class="number">3</span><h2>Save the configuration</h2></div>
+      <p>Continue to <strong>Save &amp; Install</strong>. Create a strong configuration password and save the displayed UUID and password privately. You will need them to edit the configuration and connect Strand.</p>
+      <p>After saving, find <strong>Jellyfin</strong> under <strong>Other Apps</strong> and open it.</p>
+      <figure><img class="zoomable" src="assets/03-open-jellyfin.png" alt="AIOStreams Save and Install page with the Jellyfin card highlighted"><figcaption>The credential-bearing fields have been redacted. Select the highlighted Jellyfin card—not the Stremio manifest URL.</figcaption></figure>
+    </section>
+
+    <section id="jellyfin">
+      <div class="step-title"><span class="number">4</span><h2>Collect the Jellyfin connection details</h2></div>
+      <p>The <strong>Connect</strong> tab shows everything Strand needs. Keep this page open while setting up Strand.</p>
+      <div class="field-list sans">
+        <div class="field"><strong>Server address</strong><span>Copy the full HTTPS address ending in <code>/jellyfin</code>.</span></div>
+        <div class="field"><strong>Username</strong><span>Use the UUID or alias shown by AIOStreams.</span></div>
+        <div class="field"><strong>Password</strong><span>Use the configuration password you created—not a dashboard password.</span></div>
+      </div>
+      <figure class="phone"><img class="zoomable" src="assets/04-jellyfin-connect.png" alt="AIOStreams for Jellyfin Connect tab"><figcaption>Copy the Server address and Username. The password is your AIOStreams configuration password.</figcaption></figure>
+      <div class="note danger"><strong>Do not share the sign-in-picker address.</strong> It contains an encrypted form of the configuration password and is meant only for trusted household devices.</div>
+    </section>
+
+    <section id="strand">
+      <div class="step-title"><span class="number">5</span><h2>Open Media Servers in Strand</h2></div>
+      <p>In Strand, open <strong>Settings → Media Servers</strong>, then select <strong>Add Server</strong>.</p>
+      <div class="pair">
+        <figure><img class="zoomable" src="assets/05-strand-settings.png" alt="Strand Settings with Media Servers indicated"><figcaption>Open Media Servers from Strand Settings.</figcaption></figure>
+        <figure><img class="zoomable" src="assets/06-add-server.png" alt="Strand Media Servers page with Add Server circled"><figcaption>Select Add Server.</figcaption></figure>
+      </div>
+    </section>
+
+    <section id="details">
+      <div class="step-title"><span class="number">6</span><h2>Enter the server details</h2></div>
+      <p>Use the manual form beneath the Plex and Emby Connect options. Strand detects the Jellyfin-compatible server automatically.</p>
+      <table>
+        <thead><tr><th>Strand field</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Server URL</strong></td><td>The AIOStreams Server address ending in <code>/jellyfin</code>.</td></tr>
+          <tr><td><strong>Remote URL</strong></td><td>Leave empty unless you have separate local and external addresses.</td></tr>
+          <tr><td><strong>Username</strong></td><td>The UUID or alias shown on AIOStreams' Connect tab.</td></tr>
+          <tr><td><strong>Password</strong></td><td>Your AIOStreams configuration password.</td></tr>
+          <tr><td><strong>Display Name</strong></td><td>Optional—for example, <em>AIOStreams</em>.</td></tr>
+        </tbody>
+      </table>
+      <div class="copy-row"><code>https://your-aiostreams-instance.example/jellyfin</code><button type="button" data-copy>Copy</button></div>
+      <figure><img class="zoomable" src="assets/07-server-details.png" alt="Strand Add Server manual connection form"><figcaption>Paste the AIOStreams address into Server URL. The Remote URL is only needed when you maintain separate internal and public addresses.</figcaption></figure>
+    </section>
+
+    <section id="verify">
+      <div class="step-title"><span class="number">7</span><h2>Connect and verify</h2></div>
+      <p>Select <strong>Connect</strong>. Back on the Media Servers page, the server should show a green status dot and remain enabled.</p>
+      <div class="pair">
+        <figure><img class="zoomable" src="assets/08-server-connected.png" alt="Strand showing the Jellyfin server connected"><figcaption>A green dot confirms Strand can reach the AIOStreams Jellyfin endpoint.</figcaption></figure>
+        <figure><img class="zoomable" src="assets/09-stream-versions.png" alt="Strand displaying several AIOStreams results as Jellyfin versions"><figcaption>Open a title: AIOStreams results appear as Jellyfin versions, preserving their formatted quality and release information.</figcaption></figure>
+      </div>
+      <div class="note"><strong>Direct play only:</strong> AIOStreams does not transcode these files. If one version will not play on your device, try another or adjust your AIOStreams filters and sorting so compatible formats rank first.</div>
+    </section>
+
+    <section id="options">
+      <div class="step-title"><span class="number">8</span><h2>Choose your Strand options</h2></div>
+      <p>The Media Servers page includes several optional controls:</p>
+      <ul>
+        <li><strong>Show Badge on Posters</strong> marks content available through the server.</li>
+        <li><strong>Search Media Servers</strong> includes the exposed libraries in Strand search.</li>
+        <li><strong>Use Server Artwork</strong> uses artwork supplied by the server.</li>
+        <li><strong>Track Only With Your Tracking Service</strong> prevents the server's own watch state from affecting Strand progress.</li>
+      </ul>
+      <p>Start with the defaults shown in the connected-server screenshot, then change only what you need.</p>
+    </section>
+
+    <section id="troubleshooting">
+      <h2>If something goes wrong</h2>
+      <table>
+        <thead><tr><th>Problem</th><th>Check</th></tr></thead>
+        <tbody>
+          <tr><td>Server does not connect</td><td>Make sure the URL starts with <code>https://</code>, ends with <code>/jellyfin</code>, and is copied from AIOStreams' Jellyfin Connect tab.</td></tr>
+          <tr><td>Login fails</td><td>Use the displayed UUID or alias as the username and the configuration password—not a dashboard password.</td></tr>
+          <tr><td>Libraries are missing</td><td>Add catalog and metadata providers, move important catalogs upward, save, wait about 30 seconds, then refresh Strand.</td></tr>
+          <tr><td>No versions appear</td><td>Confirm your stream addons work in AIOStreams and that filters are not excluding every result.</td></tr>
+          <tr><td>A version does not play</td><td>Try another version. Playback is direct and depends on the formats supported by Strand and the device.</td></tr>
+          <tr><td>Jellyfin option is disabled</td><td>The AIOStreams instance owner may have disabled Jellyfin support. Use a compatible instance or enable it on your self-hosted deployment.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="sources">
+      <h2>Official references</h2>
+      <ul>
+        <li><a href="https://docs.aiostreams.viren070.me/guides/jellyfin/">AIOStreams Jellyfin guide</a></li>
+        <li><a href="https://docs.aiostreams.viren070.me/configuration/setup/">AIOStreams setup guide</a></li>
+        <li><a href="https://github.com/Viren070/AIOStreams">AIOStreams source repository</a></li>
+      </ul>
+      <p class="sans" style="color:var(--muted);font-size:.82rem">This is an independent community guide. It is not made, reviewed or endorsed by Strand, AIOStreams or Jellyfin. Interfaces can change between releases.</p>
+    </section>
+  </main>
+
+  <footer>Screenshot-led community guide • No analytics, cookies or external assets</footer>
+
+  <dialog id="lightbox"><img alt="Enlarged guide screenshot"><button type="button">Close</button></dialog>
+  <script>
+    document.querySelectorAll('[data-copy]').forEach(button => {
+      button.addEventListener('click', async () => {
+        const value = button.previousElementSibling.textContent;
+        await navigator.clipboard.writeText(value);
+        const old = button.textContent;
+        button.textContent = 'Copied';
+        setTimeout(() => button.textContent = old, 1400);
+      });
+    });
+    const dialog = document.querySelector('#lightbox');
+    const dialogImage = dialog.querySelector('img');
+    document.querySelectorAll('.zoomable').forEach(image => {
+      image.addEventListener('click', () => {
+        dialogImage.src = image.src;
+        dialogImage.alt = image.alt;
+        dialog.showModal();
+      });
+    });
+    dialog.querySelector('button').addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+  </script>
+</body>
+</html>
