@@ -1,4 +1,4 @@
-# AIOStreams + Jellyfin + Strand guide
+# AIOStreams + Jellyfin + external player guide
 
 This folder is ready for GitHub Pages.
 
