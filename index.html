@@ -1,11 +1,11 @@
-<!doctype html>
+r<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A screenshot-led guide to connecting AIOStreams to Strand through its Jellyfin-compatible server.">
+  <meta name="description" content="A screenshot-led guide to connecting AIOStreams to external player through its Jellyfin-compatible server.">
   <meta name="theme-color" content="#f5f2e9">
-  <title>Connect AIOStreams to Strand through Jellyfin</title>
+  <title>Connect AIOStreams to external player through Jellyfin</title>
   <style>
     :root {
       --paper: #f5f2e9;
@@ -190,23 +190,23 @@
 <body>
   <header>
     <div class="hero">
-      <p class="kicker">Strand community guide</p>
-      <h1>Connect AIOStreams to Strand through Jellyfin</h1>
-      <p class="intro">Configure your addons once in AIOStreams, expose the configuration as a Jellyfin-compatible server, and use it in Strand across iPhone, iPad, Mac and Apple TV.</p>
+      <p class="kicker">community guide</p>
+      <h1>Connect AIOStreams to external player through Jellyfin</h1>
+      <p class="intro">Configure your addons once in AIOStreams, expose the configuration as a Jellyfin-compatible server, and use it in an external player across iPhone, iPad, Mac and Apple TV.</p>
       <div class="meta"><span>About 10–20 minutes</span><span>•</span><span>No separate Jellyfin server required</span><span>•</span><span>Updated September 2026</span></div>
     </div>
   </header>
 
   <div class="contents-wrap">
     <nav class="contents sans" aria-label="Guide contents">
-      <a href="#before">Before you start</a><a href="#open">Open AIOStreams</a><a href="#addons">Add sources</a><a href="#jellyfin">Jellyfin details</a><a href="#strand">Connect Strand</a><a href="#verify">Verify</a><a href="#troubleshooting">Fixes</a>
+      <a href="#before">Before you start</a><a href="#open">Open AIOStreams</a><a href="#addons">Add sources</a><a href="#jellyfin">Jellyfin details</a><a href="#strand">Connect to external player</a><a href="#verify">Verify</a><a href="#troubleshooting">Fixes</a>
     </nav>
   </div>
 
   <main>
     <section id="before">
       <h2>Before you start</h2>
-      <div class="summary"><strong>The short version:</strong> AIOStreams can behave like a Jellyfin server. Its catalogs become libraries and the streams returned for a title become Jellyfin versions. Strand connects to that endpoint like it would connect to any other Jellyfin server.</div>
+      <div class="summary"><strong>The short version:</strong> AIOStreams can behave like a Jellyfin server. Its catalogs become libraries and the streams returned for a title become Jellyfin versions. External player connects to that endpoint like it would connect to any other Jellyfin server.</div>
       <p>You need a saved AIOStreams configuration containing:</p>
       <ul>
         <li><strong>Catalog addons</strong> to populate libraries and shelves.</li>
@@ -232,14 +232,14 @@
 
     <section id="save">
       <div class="step-title"><span class="number">3</span><h2>Save the configuration</h2></div>
-      <p>Continue to <strong>Save &amp; Install</strong>. Create a strong configuration password and save the displayed UUID and password privately. You will need them to edit the configuration and connect Strand.</p>
+      <p>Continue to <strong>Save &amp; Install</strong>. Create a strong configuration password and save the displayed UUID and password privately. You will need them to edit the configuration and connect external player</p>
       <p>After saving, find <strong>Jellyfin</strong> under <strong>Other Apps</strong> and open it.</p>
       <figure><img class="zoomable" src="assets/03-open-jellyfin.png" alt="AIOStreams Save and Install page with the Jellyfin card highlighted"><figcaption>The credential-bearing fields have been redacted. Select the highlighted Jellyfin card—not the Stremio manifest URL.</figcaption></figure>
     </section>
 
     <section id="jellyfin">
       <div class="step-title"><span class="number">4</span><h2>Collect the Jellyfin connection details</h2></div>
-      <p>The <strong>Connect</strong> tab shows everything Strand needs. Keep this page open while setting up Strand.</p>
+      <p>The <strong>Connect</strong> tab shows everything the external player needs. Keep this page open while setting up the external player</p>
       <div class="field-list sans">
         <div class="field"><strong>Server address</strong><span>Copy the full HTTPS address ending in <code>/jellyfin</code>.</span></div>
         <div class="field"><strong>Username</strong><span>Use the UUID or alias shown by AIOStreams.</span></div>
@@ -250,17 +250,17 @@
     </section>
 
     <section id="strand">
-      <div class="step-title"><span class="number">5</span><h2>Open Media Servers in Strand</h2></div>
-      <p>In Strand, open <strong>Settings → Media Servers</strong>, then select <strong>Add Server</strong>.</p>
+      <div class="step-title"><span class="number">5</span><h2>Open Media Servers in the external player</h2></div>
+      <p>In the external player, open <strong>Settings → Media Servers</strong>, then select <strong>Add Server</strong>.</p>
       <div class="pair">
-        <figure><img class="zoomable" src="assets/05-strand-settings.png" alt="Strand Settings with Media Servers indicated"><figcaption>Open Media Servers from Strand Settings.</figcaption></figure>
+        <figure><img class="zoomable" src="assets/05-strand-settings.png" alt="Strand Settings with Media Servers indicated"><figcaption>Open Media Servers from Settings.</figcaption></figure>
         <figure><img class="zoomable" src="assets/06-add-server.png" alt="Strand Media Servers page with Add Server circled"><figcaption>Select Add Server.</figcaption></figure>
       </div>
     </section>
 
     <section id="details">
       <div class="step-title"><span class="number">6</span><h2>Enter the server details</h2></div>
-      <p>Use the manual form beneath the Plex and Emby Connect options. Strand detects the Jellyfin-compatible server automatically.</p>
+      <p>Use the manual form beneath the Plex and Emby Connect options. the external player detects the Jellyfin-compatible server automatically.</p>
       <table>
         <thead><tr><th>Strand field</th><th>Value</th></tr></thead>
         <tbody>
@@ -279,20 +279,20 @@
       <div class="step-title"><span class="number">7</span><h2>Connect and verify</h2></div>
       <p>Select <strong>Connect</strong>. Back on the Media Servers page, the server should show a green status dot and remain enabled.</p>
       <div class="pair">
-        <figure><img class="zoomable" src="assets/08-server-connected.png" alt="Strand showing the Jellyfin server connected"><figcaption>A green dot confirms Strand can reach the AIOStreams Jellyfin endpoint.</figcaption></figure>
+        <figure><img class="zoomable" src="assets/08-server-connected.png" alt="Strand showing the Jellyfin server connected"><figcaption>A green dot confirms the external player can reach the AIOStreams Jellyfin endpoint.</figcaption></figure>
         <figure><img class="zoomable" src="assets/09-stream-versions.png" alt="Strand displaying several AIOStreams results as Jellyfin versions"><figcaption>Open a title: AIOStreams results appear as Jellyfin versions, preserving their formatted quality and release information.</figcaption></figure>
       </div>
       <div class="note"><strong>Direct play only:</strong> AIOStreams does not transcode these files. If one version will not play on your device, try another or adjust your AIOStreams filters and sorting so compatible formats rank first.</div>
     </section>
 
     <section id="options">
-      <div class="step-title"><span class="number">8</span><h2>Choose your Strand options</h2></div>
+      <div class="step-title"><span class="number">8</span><h2>Choose your external player options</h2></div>
       <p>The Media Servers page includes several optional controls:</p>
       <ul>
         <li><strong>Show Badge on Posters</strong> marks content available through the server.</li>
-        <li><strong>Search Media Servers</strong> includes the exposed libraries in Strand search.</li>
+        <li><strong>Search Media Servers</strong> includes the exposed libraries in search.</li>
         <li><strong>Use Server Artwork</strong> uses artwork supplied by the server.</li>
-        <li><strong>Track Only With Your Tracking Service</strong> prevents the server's own watch state from affecting Strand progress.</li>
+        <li><strong>Track Only With Your Tracking Service</strong> prevents the server's own watch state from affecting progress.</li>
       </ul>
       <p>Start with the defaults shown in the connected-server screenshot, then change only what you need.</p>
     </section>
@@ -304,9 +304,9 @@
         <tbody>
           <tr><td>Server does not connect</td><td>Make sure the URL starts with <code>https://</code>, ends with <code>/jellyfin</code>, and is copied from AIOStreams' Jellyfin Connect tab.</td></tr>
           <tr><td>Login fails</td><td>Use the displayed UUID or alias as the username and the configuration password—not a dashboard password.</td></tr>
-          <tr><td>Libraries are missing</td><td>Add catalog and metadata providers, move important catalogs upward, save, wait about 30 seconds, then refresh Strand.</td></tr>
+          <tr><td>Libraries are missing</td><td>Add catalog and metadata providers, move important catalogs upward, save, wait about 30 seconds, then refresh. </td></tr>
           <tr><td>No versions appear</td><td>Confirm your stream addons work in AIOStreams and that filters are not excluding every result.</td></tr>
-          <tr><td>A version does not play</td><td>Try another version. Playback is direct and depends on the formats supported by Strand and the device.</td></tr>
+          <tr><td>A version does not play</td><td>Try another version. Playback is direct and depends on the formats supported by your external player and the device.</td></tr>
           <tr><td>Jellyfin option is disabled</td><td>The AIOStreams instance owner may have disabled Jellyfin support. Use a compatible instance or enable it on your self-hosted deployment.</td></tr>
         </tbody>
       </table>
